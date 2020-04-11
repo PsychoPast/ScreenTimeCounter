@@ -7,7 +7,7 @@ namespace ScreenTimeCounter
 {
     internal class IdleHandler
     {
-        private long idleTime;
+        private long _lastInputTime;
         private readonly ScreenTimeCounter _screenTimeCounter;
         public IdleHandler(ScreenTimeCounter screenTimeCounter)
         {
@@ -42,7 +42,7 @@ namespace ScreenTimeCounter
             if (GetLastUserInput(ref lASTINPUTINFO))
             {
                 long lastInputTime = lASTINPUTINFO.dwTime;
-                if (idleTime == lastInputTime)
+                if (_lastInputTime == lastInputTime)
                 {
                     _screenTimeCounter.Timer.Stop();
                 }
@@ -53,7 +53,7 @@ namespace ScreenTimeCounter
                         _screenTimeCounter.Timer.Start();
                     }
                 }
-                idleTime = lastInputTime;
+                _lastInputTime = lastInputTime;
             }
         }
     }
