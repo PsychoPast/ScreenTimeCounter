@@ -9,7 +9,7 @@ Lightweight screen time counter.
 Launch the exe and use your computer normally. The app creates a scheduled task to run when the current user logs on unless you launch it with **-!registertaskschedule**.
 
 # IdleTime
-App automatically detect when you're idle and stop the capture. Default idleTime is 5 minutes (300000 milliseconds) which you can change to your own value (in milliseconds) by modiying "config.txt".
+App automatically detect when you're idle and stop the capture. Default idleTime is 5 minutes (300000 milliseconds) which you can change to your own value (in milliseconds) by creating a "config.txt" in the same folder as the .exe and writing in it: **idleTime=your value in milliseconds**.
 
 # How to get the time spent
 ScreenTimeCounter.exe *enter argument here*
