@@ -13,10 +13,15 @@ namespace ScreenTimeCounter
 {
     internal class ScreenTimeCounter
     {
+        public bool IsCapturing { get; set; }
         public Timer Timer { get; private set; }
+
         private static readonly string filePathFolder = $@"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\ScreenTimeCounter";
+
         private string today = DateTime.Today.ToString("MM-dd-yyyy");
+
         private string fileName;
+
         private long rawTime;
 
         private ScreenTimeCounter()
@@ -170,15 +175,15 @@ namespace ScreenTimeCounter
                 Interval = 1000,
                 AutoReset = true
             };
-            Timer.Elapsed += Timer_Elapsed;
+            Timer.Elapsed += Capture;
             Timer.Start();
             new IdleHandler(this);
             Console.ReadLine();
         }
 
-        private void Timer_Elapsed(object sender, ElapsedEventArgs e)
+        public void Capture(object sender, ElapsedEventArgs e)
         {
-
+            IsCapturing = true;
             string privateToday = DateTime.Today.ToString("MM-dd-yyyy");
             if (today != privateToday)
             {

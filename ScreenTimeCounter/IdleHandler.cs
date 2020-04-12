@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Timers;
 using static ScreenTimeCounter.Win32;
@@ -7,33 +8,26 @@ namespace ScreenTimeCounter
 {
     internal class IdleHandler
     {
-        private long _lastInputTime;
+        private double idleTime = 8000;
+
         private readonly ScreenTimeCounter _screenTimeCounter;
+
         public IdleHandler(ScreenTimeCounter screenTimeCounter)
         {
             _screenTimeCounter = screenTimeCounter;
             Initialize();
         }
+
         private void Initialize()
         {
-            double interval = 300000;
-            if (File.Exists("config.txt"))
+            if (File.Exists("config.txt") && double.TryParse(File.ReadAllText("config.txt").Split("=")[1], out double interval))
             {
-                if (double.TryParse(File.ReadAllText("config.txt").Split("=")[1], out double interv))
-                {
-                    interval = interv;
-                }
+                idleTime = interval;
             }
-            Timer timer = new Timer()
-            {
-                Interval = interval,
-                AutoReset = true
-            };
-            timer.Elapsed += Timer_Elapsed;
-            timer.Start();
+            _screenTimeCounter.Timer.Elapsed += CheckIdle;
         }
 
-        private void Timer_Elapsed(object sender, ElapsedEventArgs e)
+        private void CheckIdle(object sender, ElapsedEventArgs e)
         {
             LASTINPUTINFO lASTINPUTINFO = new LASTINPUTINFO
             {
@@ -41,19 +35,20 @@ namespace ScreenTimeCounter
             };
             if (GetLastUserInput(ref lASTINPUTINFO))
             {
-                long lastInputTime = lASTINPUTINFO.dwTime;
-                if (_lastInputTime == lastInputTime)
+                long lastInputTime = Environment.TickCount64 - lASTINPUTINFO.dwTime;
+                if (lastInputTime >= idleTime)
                 {
-                    _screenTimeCounter.Timer.Stop();
+                    Console.WriteLine(true);
+                    _screenTimeCounter.Timer.Elapsed -= _screenTimeCounter.Capture;
+                    _screenTimeCounter.IsCapturing = false;
                 }
                 else
                 {
-                    if (!_screenTimeCounter.Timer.Enabled)
+                    if (!_screenTimeCounter.IsCapturing)
                     {
-                        _screenTimeCounter.Timer.Start();
+                        _screenTimeCounter.Timer.Elapsed += _screenTimeCounter.Capture;
                     }
                 }
-                _lastInputTime = lastInputTime;
             }
         }
     }
