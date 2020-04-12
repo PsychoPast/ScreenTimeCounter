@@ -24,7 +24,13 @@ namespace ScreenTimeCounter
             {
                 idleTime = interval;
             }
-            _screenTimeCounter.Timer.Elapsed += CheckIdle;
+            Timer idleTimer = new Timer()
+            {
+                Interval = 1000,
+                AutoReset = true
+            };
+            idleTimer.Elapsed += CheckIdle;
+            idleTimer.Start();
         }
 
         private void CheckIdle(object sender, ElapsedEventArgs e)
@@ -38,14 +44,19 @@ namespace ScreenTimeCounter
                 long lastInputTime = Environment.TickCount64 - lASTINPUTINFO.dwTime;
                 if (lastInputTime >= idleTime)
                 {
-                    _screenTimeCounter.Timer.Elapsed -= _screenTimeCounter.Capture;
+                    if(_screenTimeCounter.IsCapturing)
+                    {
+                        Console.WriteLine("User has entered idle mode.");
+                    }
+                    _screenTimeCounter.Timer.Stop();
                     _screenTimeCounter.IsCapturing = false;
                 }
                 else
                 {
                     if (!_screenTimeCounter.IsCapturing)
                     {
-                        _screenTimeCounter.Timer.Elapsed += _screenTimeCounter.Capture;
+                        Console.WriteLine("User's not idle anymore.");
+                        _screenTimeCounter.Timer.Start();
                     }
                 }
             }
