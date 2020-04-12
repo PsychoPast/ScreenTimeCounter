@@ -8,7 +8,7 @@ namespace ScreenTimeCounter
 {
     internal class IdleHandler
     {
-        private double idleTime = 8000;
+        private double idleTime = 300000;
 
         private readonly ScreenTimeCounter _screenTimeCounter;
 
