@@ -38,7 +38,6 @@ namespace ScreenTimeCounter
                 long lastInputTime = Environment.TickCount64 - lASTINPUTINFO.dwTime;
                 if (lastInputTime >= idleTime)
                 {
-                    Console.WriteLine(true);
                     _screenTimeCounter.Timer.Elapsed -= _screenTimeCounter.Capture;
                     _screenTimeCounter.IsCapturing = false;
                 }
