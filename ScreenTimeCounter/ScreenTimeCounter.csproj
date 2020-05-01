@@ -6,7 +6,7 @@
     <StartupObject></StartupObject>
     <ApplicationIcon>107604672-timer-vector-icon-isolated-on-transparent-background-timer-logo-concept.ico</ApplicationIcon>
     <Authors>PsychoPast</Authors>
-    <Copyright>PsychoPast © 2020</Copyright>
+    <Copyright>Copyright © 2020 PsychoPast</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
