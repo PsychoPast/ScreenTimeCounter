@@ -7,21 +7,9 @@
     <ApplicationIcon>107604672-timer-vector-icon-isolated-on-transparent-background-timer-logo-concept.ico</ApplicationIcon>
     <Authors>PsychoPast</Authors>
     <Copyright>Copyright © 2020 PsychoPast</Copyright>
+    <Version>1.0.2</Version>
+    <AssemblyVersion>1.0.2</AssemblyVersion>
+    <FileVersion>1.0.2</FileVersion>
   </PropertyGroup>
-
-  <ItemGroup>
-    <COMReference Include="IWshRuntimeLibrary.dll">
-      <Guid>f935dc20-1cf0-11d0-adb9-00c04fd58a0b</Guid>
-      <VersionMajor>1</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <WrapperTool>tlbimp</WrapperTool>
-      <Lcid>0</Lcid>
-      <Isolated>false</Isolated>
-    </COMReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="TaskScheduler" Version="2.8.18" />
-  </ItemGroup>
 
 </Project>

@@ -44,16 +44,15 @@ namespace ScreenTimeCounter
                 long lastInputTime = Environment.TickCount64 - lASTINPUTINFO.dwTime;
                 if (lastInputTime >= idleTime)
                 {
-                    if(_screenTimeCounter.IsCapturing)
+                    if (_screenTimeCounter.Timer.Enabled)
                     {
                         Console.WriteLine("User has entered idle mode.");
                     }
                     _screenTimeCounter.Timer.Stop();
-                    _screenTimeCounter.IsCapturing = false;
                 }
                 else
                 {
-                    if (!_screenTimeCounter.IsCapturing)
+                    if (!_screenTimeCounter.Timer.Enabled)
                     {
                         Console.WriteLine("User's not idle anymore.");
                         _screenTimeCounter.Timer.Start();

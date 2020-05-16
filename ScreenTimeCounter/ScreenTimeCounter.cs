@@ -1,11 +1,8 @@
-﻿using Microsoft.Win32.TaskScheduler;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Security.Principal;
 using System.Timers;
 using File = System.IO.File;
 
@@ -13,7 +10,6 @@ namespace ScreenTimeCounter
 {
     internal class ScreenTimeCounter
     {
-        public bool IsCapturing { get; set; }
         public Timer Timer { get; private set; }
 
         private static readonly string filePathFolder = $@"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}\ScreenTimeCounter";
@@ -24,10 +20,7 @@ namespace ScreenTimeCounter
 
         private long rawTime;
 
-        private ScreenTimeCounter()
-        {
-            fileName = $@"{filePathFolder}\{today}.txt";
-        }
+        private ScreenTimeCounter() => fileName = $@"{filePathFolder}\{today}.txt";
 
         private static void Main(string[] args)
         {
@@ -44,9 +37,6 @@ namespace ScreenTimeCounter
             {
                 switch (args[0])
                 {
-                    case "-!registertaskschedule":
-                        new ScreenTimeCounter().StartCounter(false);
-                        break;
                     case "-total":
                         ShowScreenTime(Directory.GetFiles(filePathFolder).ToList());
                         break;
@@ -72,20 +62,16 @@ namespace ScreenTimeCounter
                         ShowScreenTime(GetFilesWithFilter(args[1]));
                         break;
                     default:
-                        throw new ArgumentException();
+                        throw new ArgumentException("This is not a valid argument.");
                 }
             }
         }
 
-        private static bool MatchesFilter(string file, int timeFilter)
-        {
-            return DateTime.Parse(new FileInfo(file).CreationTime.Date.ToShortDateString()) < DateTime.Parse(DateTime.Now.Date.AddDays(timeFilter).ToShortDateString());
-        }
+        private static bool MatchesFilter(string file, int timeFilter) => DateTime.Parse(new FileInfo(file).CreationTime.Date.ToShortDateString()) < DateTime.Parse(DateTime.Now.Date.AddDays(timeFilter).ToShortDateString());
 
-        private static List<string> GetFilesWithFilter(TimeFilter timeFilter)
-        {
-            return GetFilesWithFilter((int)timeFilter);
-        }
+        private static List<string> GetFilesWithFilter(TimeFilter timeFilter) => GetFilesWithFilter((int)timeFilter);
+
+
 
         private static List<string> GetFilesWithFilter(int timeFilter, bool checkForInput = false)
         {
@@ -132,14 +118,12 @@ namespace ScreenTimeCounter
 
         private static void ShowScreenTime(List<string> files)
         {
-
             long rawTime = 0;
             foreach (string file in files)
             {
                 string[] readInfos = File.ReadAllLines(file);
                 rawTime += long.Parse(readInfos[0].Split(":")[1]);
             }
-
             TimeSpanExtension convertedTime = new TimeSpanExtension().FromSeconds(rawTime);
             string time = $"Screen Time: {convertedTime.Hours} hours {convertedTime.Minutes} minutes {convertedTime.Seconds} seconds";
             Console.WriteLine(time);
@@ -163,12 +147,8 @@ namespace ScreenTimeCounter
             Console.ReadLine();
         }
 
-        private void StartCounter(bool registerInTaskSchedule = true)
+        private void StartCounter()
         {
-            if (registerInTaskSchedule)
-            {
-                RegisterInTaskSchedule();
-            }
             Console.WriteLine("Running . . .");
             Timer = new Timer()
             {
@@ -183,7 +163,6 @@ namespace ScreenTimeCounter
 
         public void Capture(object sender, ElapsedEventArgs e)
         {
-            IsCapturing = true;
             string privateToday = DateTime.Today.ToString("MM-dd-yyyy");
             if (today != privateToday)
             {
@@ -204,21 +183,6 @@ namespace ScreenTimeCounter
             File.WriteAllLines(fileName, infos);
         }
 
-        private void RegisterInTaskSchedule()
-        {
-            using TaskService taskService = new TaskService();
-            if (taskService.RootFolder.AllTasks.Any(task => task.Name == "ScreenTimeCounter"))
-            {
-                return;
-            }
-            TaskDefinition taskDefinition = taskService.NewTask();
-            taskDefinition.RegistrationInfo.Description = "Start screen time counter";
-            taskDefinition.RegistrationInfo.Author = Environment.MachineName;
-            taskDefinition.Triggers.Add(new LogonTrigger() { UserId = WindowsIdentity.GetCurrent().Name });
-            taskDefinition.Actions.Add(Assembly.GetExecutingAssembly().Location.Replace("dll", "exe"));
-            Console.WriteLine("Adding application to task scheduler . . .\nIf you wish you don't want the app launch at pc startup add \"-!registertaskschedule\"");
-            taskService.RootFolder.RegisterTaskDefinition("ScreenTimeCounter", taskDefinition);
-        }
     }
 
     internal enum TimeFilter : int
@@ -229,6 +193,7 @@ namespace ScreenTimeCounter
         Year = -364
     }
 }
+
 
 internal class TimeSpanExtension
 {

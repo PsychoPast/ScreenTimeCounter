@@ -22,9 +22,9 @@ namespace ScreenTimeCounter
         /// <summary>
         /// Retrieves the time of the last input event.
         /// </summary>
-        /// <param name="LastInputInfo">A pointer to a LASTINPUTINFO structure that receives the time of the last input event.</param>
+        /// <param name="plii">A pointer to a LASTINPUTINFO structure that receives the time of the last input event.</param>
         /// <returns></returns>
         [DllImport("user32.dll", EntryPoint = "GetLastInputInfo")]
-        public static extern bool GetLastUserInput(ref LASTINPUTINFO LastInputInfo);
+        public static extern bool GetLastUserInput(ref LASTINPUTINFO plii);
     }
 }
