@@ -122,6 +122,10 @@ namespace ScreenTimeCounter
             foreach (string file in files)
             {
                 string[] readInfos = File.ReadAllLines(file);
+                if (readInfos.Length != 2)
+                {
+                    continue;
+                }
                 rawTime += long.Parse(readInfos[0].Split(":")[1]);
             }
             TimeSpanExtension convertedTime = new TimeSpanExtension().FromSeconds(rawTime);
@@ -140,6 +144,10 @@ namespace ScreenTimeCounter
             }
             long rawTime = 0;
             string[] readInfos = File.ReadAllLines(file);
+            if(readInfos.Length != 2)
+            {
+                return;
+            }
             rawTime += long.Parse(readInfos[0].Split(":")[1]);
             TimeSpanExtension convertedTime = new TimeSpanExtension().FromSeconds(rawTime);
             string time = $"Screen Time: {convertedTime.Hours} hours {convertedTime.Minutes} minutes {convertedTime.Seconds} seconds";
