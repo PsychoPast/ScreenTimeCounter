@@ -61,6 +61,9 @@ namespace ScreenTimeCounter
                     case "-date":
                         ShowScreenTime(GetFilesWithFilter(args[1]));
                         break;
+                    case "-removeCorrupted":
+                        Console.WriteLine($"{RemoveCorruptedFiles()} corrupted files were found and cleaned!");
+                        break;
                     default:
                         throw new ArgumentException("This is not a valid argument.");
                 }
@@ -151,6 +154,21 @@ namespace ScreenTimeCounter
             string time = $"Screen Time: {new TimeSpanExtension().FromSeconds(rawTime)}";
             Console.WriteLine(time);
             Console.ReadLine();
+        }
+
+        private static int RemoveCorruptedFiles()
+        {
+            int count = 0;
+            string[] files = Directory.GetFiles(filePathFolder);
+            for (int i = 0; i < files.Length; i++)
+            {
+                if (new FileInfo(files[i]).Length == 0)
+                {
+                    File.Delete(files[i]);
+                    count++;
+                }
+            }
+            return count;
         }
 
         private void StartCounter()
