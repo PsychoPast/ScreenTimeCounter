@@ -24,6 +24,7 @@ ScreenTimeCounter.exe *enter argument here*
 -date *specific date* (format: mm-dd-yyyy -> example: 04-03-2020)
 -count *number*  
 -range *startDate*~*endDate*
+-removeCorrupted
 ```
    
  
