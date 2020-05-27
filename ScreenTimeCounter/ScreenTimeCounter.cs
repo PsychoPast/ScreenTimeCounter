@@ -71,8 +71,6 @@ namespace ScreenTimeCounter
 
         private static List<string> GetFilesWithFilter(TimeFilter timeFilter) => GetFilesWithFilter((int)timeFilter);
 
-
-
         private static List<string> GetFilesWithFilter(int timeFilter, bool checkForInput = false)
         {
             List<string> fileList = Directory.GetFiles(filePathFolder).ToList();
@@ -118,18 +116,19 @@ namespace ScreenTimeCounter
 
         private static void ShowScreenTime(List<string> files)
         {
+            int count = files.Count;
             long rawTime = 0;
             foreach (string file in files)
             {
                 string[] readInfos = File.ReadAllLines(file);
                 if (readInfos.Length != 2)
                 {
+                    count -= 1;
                     continue;
                 }
                 rawTime += long.Parse(readInfos[0].Split(":")[1]);
             }
-            TimeSpanExtension convertedTime = new TimeSpanExtension().FromSeconds(rawTime);
-            string time = $"Screen Time: {convertedTime.Hours} hours {convertedTime.Minutes} minutes {convertedTime.Seconds} seconds";
+            string time = $"Screen Time for the last {count} days: {new TimeSpanExtension().FromSeconds(rawTime)}";
             Console.WriteLine(time);
             Console.ReadLine();
         }
@@ -144,13 +143,12 @@ namespace ScreenTimeCounter
             }
             long rawTime = 0;
             string[] readInfos = File.ReadAllLines(file);
-            if(readInfos.Length != 2)
+            if (readInfos.Length != 2)
             {
                 return;
             }
             rawTime += long.Parse(readInfos[0].Split(":")[1]);
-            TimeSpanExtension convertedTime = new TimeSpanExtension().FromSeconds(rawTime);
-            string time = $"Screen Time: {convertedTime.Hours} hours {convertedTime.Minutes} minutes {convertedTime.Seconds} seconds";
+            string time = $"Screen Time: {new TimeSpanExtension().FromSeconds(rawTime)}";
             Console.WriteLine(time);
             Console.ReadLine();
         }
@@ -190,8 +188,8 @@ namespace ScreenTimeCounter
             string[] infos = { timeRaw, time };
             File.WriteAllLines(fileName, infos);
         }
-
     }
+
 
     internal enum TimeFilter : int
     {
@@ -205,14 +203,17 @@ namespace ScreenTimeCounter
 
 internal class TimeSpanExtension
 {
-    public long Hours { get; set; }
-    public long Minutes { get; set; }
-    public long Seconds { get; set; }
+    public long Days { get; private set; }
+    public long Hours { get; private set; }
+    public long Minutes { get; private set; }
+    public long Seconds { get; private set; }
     public TimeSpanExtension FromSeconds(long timeInSeconds)
     {
-        Hours = timeInSeconds / 3600;
-        Minutes = (timeInSeconds % 3600) / 60;
+        Days = timeInSeconds / 86400;
+        Hours = timeInSeconds % 86400 / 3600;
+        Minutes = timeInSeconds % 3600 / 60;
         Seconds = timeInSeconds % 60;
         return this;
     }
+    public override string ToString() => $"{Days} days {Hours} hours {Minutes} minutes {Seconds} seconds";
 }

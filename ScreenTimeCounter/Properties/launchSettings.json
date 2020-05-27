@@ -1,8 +1,7 @@
 {
   "profiles": {
     "ScreenTimeCounter": {
-      "commandName": "Project",
-      "commandLineArgs": "-week"
+      "commandName": "Project"
     }
   }
 }

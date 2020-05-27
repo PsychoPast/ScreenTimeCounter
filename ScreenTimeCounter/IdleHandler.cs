@@ -12,6 +12,7 @@ namespace ScreenTimeCounter
 
         private readonly ScreenTimeCounter _screenTimeCounter;
 
+        private DateTime idleTimeStamp;
         public IdleHandler(ScreenTimeCounter screenTimeCounter)
         {
             _screenTimeCounter = screenTimeCounter;
@@ -46,7 +47,8 @@ namespace ScreenTimeCounter
                 {
                     if (_screenTimeCounter.Timer.Enabled)
                     {
-                        Console.WriteLine("User has entered idle mode.");
+                        idleTimeStamp = DateTime.Now;
+                        Console.WriteLine($"[{idleTimeStamp:MM/dd/yyyy HH:mm:ss}] User has entered idle mode.");
                     }
                     _screenTimeCounter.Timer.Stop();
                 }
@@ -54,7 +56,8 @@ namespace ScreenTimeCounter
                 {
                     if (!_screenTimeCounter.Timer.Enabled)
                     {
-                        Console.WriteLine("User's not idle anymore.");
+                        DateTime idleStop = DateTime.Now;
+                        Console.WriteLine($"[{idleStop:MM/dd/yyyy HH:mm:ss}] User's not idle anymore (was idle for {new TimeSpanExtension().FromSeconds(Convert.ToInt32((idleStop - idleTimeStamp).TotalSeconds))})");
                         _screenTimeCounter.Timer.Start();
                     }
                 }
